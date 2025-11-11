@@ -12,7 +12,7 @@ function Card(props) {
       }}
     >
       <img src={props.post.image} className="rounded-md" />
-      <div className="my-2 text-md font-semibold text-gray-800">
+      <div className="my-2 text-sm font-semibold text-gray-800">
         {props.post.title}
       </div>
       <div className="flex flex-row justify-between">
