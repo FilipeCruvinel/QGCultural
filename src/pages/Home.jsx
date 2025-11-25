@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useQuery } from "react-query";
 import Card from "../components/Card.jsx";
 import EmptyCard from "../components/EmptyCard.jsx";
+import Loading from "../components/Loading.jsx";
 import { FiMenu } from "react-icons/fi";
 
 const typeFilterList = [
@@ -27,6 +28,8 @@ const typeFilterList = [
   },
 ];
 
+const totalPosts = 18;
+
 function Home() {
   const [posts, setPosts] = useState([]);
   const [firstPostPage, setFirstPostPage] = useState(true);
@@ -34,8 +37,9 @@ function Home() {
   const [currentPostPage, setCurrentPostPage] = useState(1);
   const [typeFilter, setTypeFilter] = useState("all");
   const [filterDropIsOpen, setFilterDropIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const currentPost = useRef(14);
+  const currentPost = useRef(totalPosts);
   const countPostPerBlock = useRef(0);
   const postsTested = useRef([]);
   const pageControl = useRef(0);
@@ -96,6 +100,7 @@ function Home() {
 
         if (countPostPerBlock.current < 6) getPosts();
         else {
+          setIsLoading(false);
           if (currentPost.current == 0) setLastPostPage(true);
         }
       })
@@ -110,16 +115,18 @@ function Home() {
           countPostFillEmpty++;
         }
 
+        setIsLoading(false);
         setLastPostPage(true);
       });
   }
 
   function handleTypeFilter(type) {
+    setIsLoading(true);
     setTypeFilter(type);
     filterControl.current = type;
     if (lastPostPage) setLastPostPage(false);
     setFirstPostPage(true);
-    currentPost.current = 14;
+    currentPost.current = totalPosts;
     setCurrentPostPage(1);
     pageControl.current = 0;
     countPostPerBlock.current = 0;
@@ -129,6 +136,7 @@ function Home() {
   }
 
   function handlePages(move) {
+    setIsLoading(true);
     if (move == "next") {
       if (currentPostPage == 1) setFirstPostPage(false);
       setCurrentPostPage((prev) => prev + 1);
@@ -222,6 +230,7 @@ function Home() {
         {posts?.map((item) => {
           return <>{item.id >= 1 ? <Card post={item} /> : <EmptyCard />}</>;
         })}
+        <>{isLoading && <Loading />}</>
       </div>
       <div className="mt-5 flex flex-row gap-2 justify-center">
         {firstPostPage ? (

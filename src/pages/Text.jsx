@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
+import Loading from "../components/Loading.jsx";
 import parse from "html-react-parser";
 
 function Text() {
@@ -14,6 +15,7 @@ function Text() {
     title: "",
     body: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   function getPost() {
     fetch(`/texts/${id}.txt`)
@@ -26,6 +28,7 @@ function Text() {
       .then((jasonData) => {
         //console.log(jasonData);
         setPost(jasonData);
+        setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }
@@ -55,6 +58,7 @@ function Text() {
         </div>
         <div className="px-5 pt-10 pb-15">{parse(post.body)}</div>
       </div>
+      <>{isLoading && <Loading />}</>
     </div>
   );
 }
